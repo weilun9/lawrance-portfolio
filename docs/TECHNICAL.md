@@ -263,13 +263,13 @@ Everything lives in `src/data/profile.ts`:
 
 To replace the CV PDF, overwrite `public/Lawrance_Tan_CV.pdf` (keep the name, or update `profile.cvPath`).
 
-To change the background video, replace `public/hero.mp4` and `public/hero-poster.jpg` (or change `VIDEO_SRC` / `POSTER_SRC` in `BackgroundVideo.tsx`).
+To change the background video, replace `src/assets/hero.mp4` and `src/assets/hero-poster.jpg`. They are imported by `BackgroundVideo.tsx` rather than placed in `public/`, so Vite gives them content-hashed names (e.g. `/assets/hero-AbC123.mp4`): a new video gets a new URL, and browsers can cache it for a year without ever showing a stale copy.
 
 **Use H.264, not HEVC.** The original template clip is 10-bit HEVC (H.265). Most Chrome and Firefox installs on Windows cannot decode it, and the video shows as a black screen. The site therefore self-hosts an H.264 re-encode. Encode any new clip like this:
 
 ```powershell
-ffmpeg -i in.mp4 -an -c:v libx264 -profile:v high -pix_fmt yuv420p -g 1 -crf 23 -preset slow -movflags +faststart public\hero.mp4
-ffmpeg -i in.mp4 -frames:v 1 -q:v 4 public\hero-poster.jpg
+ffmpeg -i in.mp4 -an -c:v libx264 -profile:v high -pix_fmt yuv420p -g 1 -crf 26 -preset slow -movflags +faststart src\assets\hero.mp4
+ffmpeg -i src\assets\hero.mp4 -frames:v 1 -q:v 4 src\assets\hero-poster.jpg
 ```
 
 - `-g 1` makes every frame a keyframe, so each scrub seek decodes one frame (smooth, at the cost of a larger file — 4.1 MB for the 8 s, 720p clip at `-crf 26`).
@@ -402,7 +402,7 @@ External second opinions (free): https://securityheaders.com and https://observa
 ## 10. Performance and accessibility notes
 
 - Runtime JavaScript is React + the page only (~76 KB gzipped). No icon or UI libraries.
-- The video (`public/hero.mp4`, 4.1 MB) is the heaviest asset, loaded with `preload="auto"`. Until it loads, the poster image is shown, and the page is fully usable.
+- The video (`src/assets/hero.mp4`, 4.1 MB, served from `/assets/` with a hashed name) is the heaviest asset, loaded with `preload="auto"`. Until it loads, the poster image is shown, and the page is fully usable.
 - Content uses semantic elements: `<nav>`, `<section>`, `<h1>`–`<h3>`, `<article>`, `<ul>`, `<footer>`.
 - The hamburger has `aria-label` and `aria-expanded`; the overlay has `aria-hidden` when closed.
 - Text over video uses white on a dark glass layer; secondary text is never below `white/40` opacity on near-black.

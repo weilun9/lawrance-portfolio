@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react'
+// Imported (not in /public) so Vite gives each file a content-hashed name:
+// replacing the video changes its URL, so browsers never show a stale cached copy.
+import POSTER_SRC from '../assets/hero-poster.jpg'
+import VIDEO_SRC from '../assets/hero.mp4'
 
-// Self-hosted H.264 copy of the original clip. The original CDN file is 10-bit HEVC,
-// which most Chrome/Firefox installs on Windows cannot decode (renders black).
-// Encoded with every frame as a keyframe so each seek decodes a single frame.
-const VIDEO_SRC = '/hero.mp4'
-const POSTER_SRC = '/hero-poster.jpg'
+// H.264, 8-bit, every frame a keyframe (each scrub seek decodes a single frame).
+// Never use HEVC: most Chrome/Firefox installs on Windows cannot decode it (renders black).
 
 const SENSITIVITY = 0.8
 
