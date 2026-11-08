@@ -27,6 +27,11 @@ export function Hero() {
       id="top"
       className="relative z-[1] flex h-screen flex-col justify-end overflow-hidden px-5 pb-12 sm:px-8 md:justify-center md:px-10 md:pb-0"
     >
+      {/* Mobile only: the portrait crop puts the face behind the text, so darken the lower half. */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#06142a]/90 via-[#06142a]/50 to-transparent md:hidden"
+        aria-hidden="true"
+      />
       <div className="relative z-10 max-w-xl">
         {/* Starts blurred and snaps into focus once the hook line finishes typing. */}
         <h1

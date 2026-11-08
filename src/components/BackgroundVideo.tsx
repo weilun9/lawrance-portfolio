@@ -8,11 +8,31 @@ const POSTER_SRC = '/hero-poster.jpg'
 
 const SENSITIVITY = 0.8
 
+// If a browser never fires `seeked` (e.g. tab backgrounded mid-seek), stop waiting after this long.
+const SEEK_TIMEOUT_MS = 500
+
 export function BackgroundVideo() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const prevX = useRef<number | null>(null)
   const targetTime = useRef(0)
-  const seeking = useRef(false)
+  const seekStartedAt = useRef<number | null>(null) // null = no seek in flight
+
+  // Starts a seek to the latest target. Never lets a bad value (NaN/Infinity)
+  // into currentTime, because that throws and would leave the scrub stuck.
+  const seekToTarget = (video: HTMLVideoElement) => {
+    const t = targetTime.current
+    if (!Number.isFinite(t)) {
+      targetTime.current = video.currentTime || 0
+      return
+    }
+    if (Math.abs(video.currentTime - t) <= 0.01) return
+    try {
+      seekStartedAt.current = performance.now()
+      video.currentTime = t
+    } catch {
+      seekStartedAt.current = null
+    }
+  }
 
   useEffect(() => {
     const video = videoRef.current
@@ -28,16 +48,17 @@ export function BackgroundVideo() {
       prevX.current = currentX
 
       const duration = video.duration
-      if (!duration || Number.isNaN(duration)) return
+      const width = window.innerWidth
+      // Hidden/background windows can report width 0, which would make 0/0 = NaN.
+      if (!delta || !width || !Number.isFinite(duration) || duration <= 0) return
 
-      const offset = (delta / window.innerWidth) * SENSITIVITY * duration
+      const offset = (delta / width) * SENSITIVITY * duration
       targetTime.current = Math.min(Math.max(targetTime.current + offset, 0), duration)
 
       // Only one seek in flight; onSeeked picks up any newer target.
-      if (!seeking.current) {
-        seeking.current = true
-        video.currentTime = targetTime.current
-      }
+      const inFlight =
+        seekStartedAt.current !== null && performance.now() - seekStartedAt.current < SEEK_TIMEOUT_MS
+      if (!inFlight) seekToTarget(video)
     }
 
     window.addEventListener('mousemove', onMouseMove)
@@ -45,12 +66,9 @@ export function BackgroundVideo() {
   }, [])
 
   const onSeeked = () => {
+    seekStartedAt.current = null
     const video = videoRef.current
-    seeking.current = false
-    if (video && Math.abs(video.currentTime - targetTime.current) > 0.01) {
-      seeking.current = true
-      video.currentTime = targetTime.current
-    }
+    if (video) seekToTarget(video)
   }
 
   return (
@@ -66,8 +84,8 @@ export function BackgroundVideo() {
       // The poster doubles as a CSS background, so the hero is never plain black
       // even if the video fails to load or decode.
       style={{
-        objectPosition: '70% center',
-        background: `#b3122b url(${POSTER_SRC}) 70% center / cover no-repeat`,
+        objectPosition: '58% center',
+        background: `#13304f url(${POSTER_SRC}) 58% center / cover no-repeat`,
       }}
     />
   )

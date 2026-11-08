@@ -194,7 +194,7 @@ Moving the mouse across the full screen width scrubs 80% of the video. Left goes
 
 So at most one seek runs at a time, and the video always ends on the latest position. (Measured: ~40 mouse events produced 5 seeks.)
 
-Video attributes: `muted`, `playsInline` (iOS would otherwise go full screen), `preload="auto"` (load enough data to seek), `object-fit: cover`, `object-position: 70% center` (keeps the subject on the right, text on the left).
+Video attributes: `muted`, `playsInline` (iOS would otherwise go full screen), `preload="auto"` (load enough data to seek), `object-fit: cover`, `object-position: 58% center` (the character sits slightly right of centre; this keeps him centred when a portrait phone crops the sides, while leaving the left side free for text on desktop).
 
 All mutable values (`prevX`, `targetTime`, `seeking`) are `useRef`, not state: they change on every mouse move and must not trigger re-renders.
 
@@ -272,7 +272,7 @@ ffmpeg -i in.mp4 -an -c:v libx264 -profile:v high -pix_fmt yuv420p -g 1 -crf 23 
 ffmpeg -i in.mp4 -frames:v 1 -q:v 4 public\hero-poster.jpg
 ```
 
-- `-g 1` makes every frame a keyframe, so each scrub seek decodes one frame (smooth, at the cost of a larger file — 3.9 MB for the 4 s clip).
+- `-g 1` makes every frame a keyframe, so each scrub seek decodes one frame (smooth, at the cost of a larger file — 4.1 MB for the 8 s, 720p clip at `-crf 26`).
 - `-pix_fmt yuv420p` (8-bit) is the format every browser can play.
 - `+faststart` puts the index at the start of the file so the browser can seek before the download finishes.
 - The poster is shown before the video loads and is also the video element's CSS background, so the hero is never plain black.
@@ -402,7 +402,7 @@ External second opinions (free): https://securityheaders.com and https://observa
 ## 10. Performance and accessibility notes
 
 - Runtime JavaScript is React + the page only (~76 KB gzipped). No icon or UI libraries.
-- The video (`public/hero.mp4`, 3.9 MB) is the heaviest asset, loaded with `preload="auto"`. Until it loads, the poster image is shown, and the page is fully usable.
+- The video (`public/hero.mp4`, 4.1 MB) is the heaviest asset, loaded with `preload="auto"`. Until it loads, the poster image is shown, and the page is fully usable.
 - Content uses semantic elements: `<nav>`, `<section>`, `<h1>`–`<h3>`, `<article>`, `<ul>`, `<footer>`.
 - The hamburger has `aria-label` and `aria-expanded`; the overlay has `aria-hidden` when closed.
 - Text over video uses white on a dark glass layer; secondary text is never below `white/40` opacity on near-black.
