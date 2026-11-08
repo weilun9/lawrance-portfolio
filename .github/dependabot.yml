@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Security fixes still arrive for any version; routine major upgrades
+    # (e.g. Vite 8, TypeScript 7) are done by hand because they need code changes.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:

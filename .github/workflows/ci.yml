@@ -29,7 +29,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      # Runs the gitleaks CLI directly: gitleaks-action scans "first^..last",
+      # which fails on a repo whose first push includes the root commit.
       - name: Scan full git history for secrets
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo --entrypoint sh zricethezav/gitleaks:latest -c \
+            "git config --global --add safe.directory /repo && gitleaks git . --redact --verbose --exit-code 1"
