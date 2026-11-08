@@ -1,0 +1,12 @@
+node_modules
+dist
+*.local
+*.tsbuildinfo
+
+# Secrets and local config — never commit
+.env
+.env.*
+!.env.example
+.vercel
+*.pem
+*.key
