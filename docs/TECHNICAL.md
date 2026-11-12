@@ -382,7 +382,7 @@ All headers are set in `vercel.json` and apply to every path.
 Run against the live deployment:
 
 ```powershell
-npm run security -- https://<your-site>.vercel.app
+npm run security -- https://lawrancetan.vercel.app
 ```
 
 The script (no dependencies) checks and exits non-zero on any failure:
