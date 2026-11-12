@@ -46,7 +46,7 @@ export function Work() {
     <Section id="work" kicker="Selected work">
       <h2 className={`${heading} mb-12 max-w-3xl`}>Things I built that refuse to guess.</h2>
       <div className="grid gap-5 md:grid-cols-2">
-        {projects.map((p) => (
+        {projects.filter((p) => p.featured).map((p) => (
           <article
             key={p.id}
             className="flex flex-col rounded-2xl border border-white/10 bg-black/60 p-6 transition-colors duration-300 hover:border-white/40 sm:p-8"
@@ -81,20 +81,64 @@ export function Work() {
                   {s}
                 </span>
               ))}
+              <span className="ml-auto flex gap-4">
+                {p.demo && (
+                  <a
+                    href={p.demo}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[15px] text-white underline underline-offset-2 transition-opacity hover:opacity-60"
+                  >
+                    Live demo ↗
+                  </a>
+                )}
+                {p.link && (
+                  <a
+                    href={p.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[15px] text-white underline underline-offset-2 transition-opacity hover:opacity-60"
+                  >
+                    View code ↗
+                  </a>
+                )}
+              </span>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <h3 className="mt-16 mb-4 text-[13px] tracking-[0.2em] text-white/50 uppercase">More projects</h3>
+      <ul className="divide-y divide-white/10 border-y border-white/10">
+        {projects.filter((p) => !p.featured).map((p) => (
+          <li key={p.id} className="grid gap-2 py-5 md:grid-cols-[1fr_2fr_auto] md:items-baseline md:gap-6">
+            <div>
+              <span className="text-[18px] text-white" style={{ fontFamily: 'var(--font-heading)' }}>
+                {p.title}
+              </span>
+              <p className="text-[14px] text-white/50">{p.stack.join(' · ')}</p>
+            </div>
+            <p className="text-[15px] leading-relaxed text-white/75">{p.points.join(' ')}</p>
+            <span className="flex gap-4 md:justify-end">
+              {p.metric && (
+                <span className="text-[14px] text-white/60">
+                  {p.metric.value} {p.metric.label}
+                </span>
+              )}
               {p.link && (
                 <a
                   href={p.link}
                   target="_blank"
                   rel="noreferrer"
-                  className="ml-auto text-[15px] text-white underline underline-offset-2 transition-opacity hover:opacity-60"
+                  className="text-[14px] whitespace-nowrap text-white underline underline-offset-2 transition-opacity hover:opacity-60"
                 >
-                  View code ↗
+                  Code ↗
                 </a>
               )}
-            </div>
-          </article>
+            </span>
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   )
 }

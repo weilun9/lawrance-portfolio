@@ -5,10 +5,12 @@ import { useTypewriter } from '../hooks/useTypewriter'
 import { CopyIcon } from './CopyIcon'
 import { pillBase } from './pill'
 
-const PILLS = [
+const ERP_DEMO = 'https://ai-butler-erp.vercel.app'
+
+const PILLS: { label: string; href: string; download?: boolean; external?: boolean }[] = [
   { label: 'Give me 30 seconds', href: '#tldr' },
+  { label: 'Try my live AI ERP ↗', href: ERP_DEMO, external: true },
   { label: 'See the AI that says no', href: '#work' },
-  { label: 'What I do at work', href: '#experience' },
   { label: 'Download my CV', href: profile.cvPath, download: true },
 ]
 
@@ -83,6 +85,8 @@ export function Hero() {
               key={pill.label}
               href={pill.href}
               download={pill.download || undefined}
+              target={pill.external ? '_blank' : undefined}
+              rel={pill.external ? 'noreferrer' : undefined}
               className={`${pillBase} border border-black/10 bg-white text-black hover:bg-black hover:text-white`}
             >
               {pill.label}

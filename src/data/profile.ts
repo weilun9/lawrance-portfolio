@@ -34,9 +34,29 @@ export type Project = {
   points: string[]
   metric?: { value: string; label: string }
   link?: string
+  demo?: string
+  // Featured projects get a full card; the rest are listed compactly under "More projects".
+  featured?: boolean
 }
 
 export const projects: Project[] = [
+  {
+    id: 'ai-erp',
+    title: 'AI Butler ERP',
+    tagline: 'A full retail ERP with an AI butler that can look things up but never acts alone.',
+    stack: ['FastAPI', 'PostgreSQL', 'pgvector', 'React', 'MCP', 'DeepSeek'],
+    points: [
+      'Purchasing, sales, stock ledger with moving-average cost, payments with a knock-off engine, and an offline-capable POS till (PWA) for Malaysian retail.',
+      'AI butler with 9 read-only tools that go through the same permission and field-hiding rules as the API; anything it drafts waits for a person to confirm.',
+      'RAG knowledge base: measured 95% hit@6 for vector search vs 71% for keyword on a 21-question set; read-only MCP server for other AI clients.',
+      'LHDN MyInvois e-invoicing (UBL), including monthly consolidated POS invoices — tested against a simulated LHDN, not the real sandbox yet.',
+      '247 tests in CI; public demo with one-click login.',
+    ],
+    metric: { value: '247', label: 'tests in CI' },
+    link: 'https://github.com/weilun9/ai-erp',
+    demo: 'https://ai-butler-erp.vercel.app',
+    featured: true,
+  },
   {
     id: 'grounded-rag',
     title: 'Grounded RAG',
@@ -50,6 +70,22 @@ export const projects: Project[] = [
     ],
     metric: { value: '10/10', label: 'out-of-scope refused' },
     link: 'https://github.com/weilun9/grounded-rag',
+    featured: true,
+  },
+  {
+    id: 'agentic-challenge',
+    title: 'Agentic Architect Challenge',
+    tagline: 'Three agents built for an intern assessment — each one fails closed.',
+    stack: ['LangGraph', 'Ollama', 'BM25', 'BeautifulSoup', 'pytest'],
+    points: [
+      'Support triage escalates data loss, outages, breaches and repeat contacts before any reply is drafted.',
+      'Refund promises are blocked by three layers: cited policy retrieval, deterministic claim checks, then an LLM judge that fails closed.',
+      'Found why a scrape-and-summarise script failed: the model saw only 19% of the page. Map-reduce fix reads all of it.',
+      'Document agent with memory and a calculator tool: answer accuracy 10/11 → 11/11 after adding a number check; 85 offline tests in CI.',
+    ],
+    metric: { value: '11/11', label: 'agent eval answers' },
+    link: 'https://github.com/weilun9/agentic-architect-challenge',
+    featured: true,
   },
   {
     id: 'ar-agent',
@@ -60,10 +96,39 @@ export const projects: Project[] = [
       'Ranks overdue invoices by risk and drafts reminders for WhatsApp and Gmail, with Slack alerts to finance (simulated data, dry-run by default).',
       'Pre-approved message templates only; a rule engine that can only tighten decisions; a 48-hour window for account managers to take over.',
       'The LLM only summarises case history — any summary with numbers not found in the source records is rejected.',
-      'Product spec written first, including what the agent must not do.',
+      'Read-only function-calling assistant for questions about cases; 74 tests.',
     ],
     metric: { value: '48 h', label: 'human takeover window' },
     link: 'https://github.com/weilun9/ar-collections-agent',
+    featured: true,
+  },
+  {
+    id: 'coding-agent',
+    title: 'Autonomous Coding Agent',
+    tagline: 'A Claude Agent SDK coding agent that asks before it publishes anything.',
+    stack: ['Claude Agent SDK', 'Python', 'shlex', 'GitHub Actions'],
+    points: [
+      'Plans, builds, self-reviews and commits locally inside its own workspace, then waits for the next instruction.',
+      'Permission gate on every tool call: 6-tool allow-list, workspace-only file paths, shell commands parsed (not substring-matched) into deny / ask / allow.',
+      'On a 74-command test table the old substring gate got 44 right; the parsed gate gets all 74. It checks commands, not what scripts do — it is not a sandbox.',
+    ],
+    metric: { value: '74/74', label: 'gate test cases' },
+    link: 'https://github.com/weilun9/autonomous-coding-agent',
+    featured: true,
+  },
+  {
+    id: 'steel-defect',
+    title: 'Steel Defect Vision',
+    tagline: 'Classical computer vision vs deep learning on one fixed test split.',
+    stack: ['OpenCV', 'scikit-learn', 'TensorFlow', 'TFLite', 'Grad-CAM'],
+    points: [
+      'HOG + LBP + edge features with RandomForest reach 96.7% test accuracy on NEU-CLS (6 defect classes).',
+      'MobileNetV2 transfer learning: 0 test errors in 4 seeded runs — reported honestly as a near-saturated dataset.',
+      'TFLite export: 12.7 ms per image (fp32), 2.5 MB (int8); Grad-CAM peak lands on the defect 60.7% of the time vs 39.7% random.',
+    ],
+    metric: { value: '96.7%', label: 'classical CV accuracy' },
+    link: 'https://github.com/weilun9/steel-defect-cv',
+    featured: true,
   },
   {
     id: 'iot-aws',
@@ -87,6 +152,17 @@ export const projects: Project[] = [
     ],
     metric: { value: '98.6%', label: 'accuracy on 142 items' },
   },
+  {
+    id: 'northjet',
+    title: 'NorthJet',
+    tagline: 'Private-jet booking web app (Massey coursework).',
+    stack: ['Next.js 14', 'TypeScript', 'MongoDB Atlas', 'Vercel'],
+    points: [
+      'Flight search, booking and cancellation across 5 routes; times stored in UTC and shown in local airport time, including the Chatham Islands UTC+12:45.',
+    ],
+    // Live demo not linked: its MongoDB Atlas connection is down (checked 2026-11-13).
+    link: 'https://github.com/weilun9/northjet',
+  },
 ]
 
 export const experience = {
@@ -103,11 +179,15 @@ export const experience = {
 export const skills: { group: string; items: string[] }[] = [
   {
     group: 'AI & LLM',
-    items: ['LLM applications', 'AI agents', 'RAG', 'LangChain', 'LangGraph', 'Prompt engineering', 'LLM evaluation', 'Claude Code', 'Ollama', 'OpenAI / Anthropic APIs', 'Hugging Face'],
+    items: ['LLM applications', 'AI agents', 'RAG', 'LangChain', 'LangGraph', 'MCP', 'Claude Agent SDK', 'Prompt engineering', 'LLM evaluation', 'Claude Code', 'Ollama', 'OpenAI / Anthropic / DeepSeek APIs', 'Hugging Face'],
+  },
+  {
+    group: 'Machine learning & vision',
+    items: ['TensorFlow / Keras', 'TFLite', 'scikit-learn', 'OpenCV', 'Grad-CAM'],
   },
   {
     group: 'Back end & cloud',
-    items: ['Python', 'FastAPI', 'REST APIs', 'SQL', 'MongoDB', 'Docker', 'AWS', 'GitHub Actions'],
+    items: ['Python', 'FastAPI', 'REST APIs', 'PostgreSQL', 'pgvector', 'SQLAlchemy', 'MongoDB', 'Docker', 'AWS', 'Vercel', 'GitHub Actions'],
   },
   {
     group: 'Integration & tools',
@@ -115,7 +195,7 @@ export const skills: { group: string; items: string[] }[] = [
   },
   {
     group: 'Other languages',
-    items: ['TypeScript / Next.js', 'C++', 'C# / ASP.NET MVC', 'Kotlin'],
+    items: ['TypeScript / React / Next.js', 'C++', 'C# / ASP.NET MVC', 'Kotlin'],
   },
 ]
 
