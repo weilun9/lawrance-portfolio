@@ -60,6 +60,21 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    id: 'doc2excel',
+    title: 'Doc2Excel',
+    tagline: 'Scanned invoices and phone photos to Excel, with a person checking every table.',
+    stack: ['Python', 'RapidOCR', 'DeepSeek', 'Flask', 'pywebview', 'PyInstaller'],
+    points: [
+      'Windows desktop app: photograph documents with a phone via a QR upload page, drop files, scan from a WIA scanner or save into a watched folder.',
+      'Local OCR (RapidOCR on ONNX Runtime) works offline; an LLM extracts header fields and line items, and the app falls back to layout rules when the API is unreachable.',
+      'Review against the original side by side, correct the table with edit / undo / confirm, then export a formatted .xlsx.',
+      'Phone uploads use a random token that changes on every start; API keys stay in a local .env and are never shown back.',
+      'Can push papers into the AI Butler ERP scan queue with a token made in the ERP.',
+    ],
+    link: 'https://github.com/weilun9/doc2excel',
+    featured: true,
+  },
+  {
     id: 'grounded-rag',
     title: 'Grounded RAG',
     tagline: 'Document Q&A that answers only with citations — or refuses.',
